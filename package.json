@@ -1,0 +1,41 @@
+{
+  "name": "resource-keeper",
+  "version": "0.0.1",
+  "description": "A tool for automatically managing and stably recycling unmanaged resources.",
+  "main": "resource-keeper.js",
+  "types": "resource-keeper.d.js",
+  "scripts": {
+    "build": "gulp build",
+    "pack": "gulp pack",
+    "publish-npm": "gulp pack && npm publish ./package",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iplaylf2/resource-keeper.git"
+  },
+  "keywords": [
+    "unmanaged resources",
+    "dispose",
+    "typescript",
+    "javascript"
+  ],
+  "author": "i-play-lf2",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/iplaylf2/resource-keeper/issues"
+  },
+  "homepage": "https://github.com/iplaylf2/resource-keeper#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.2.0",
+    "@typescript-eslint/parser": "^6.2.0",
+    "eslint": "^8.46.0",
+    "eslint-config-prettier": "^8.9.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "gulp": "^4.0.2",
+    "gulp-sourcemaps": "^3.0.0",
+    "gulp-typescript": "6.0.0-alpha.1",
+    "prettier": "^3.0.0",
+    "typescript": "^5.1.6"
+  }
+}
