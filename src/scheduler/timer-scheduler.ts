@@ -1,32 +1,47 @@
-import { Dispose } from "../type";
+import { ResourceKeeperError } from "../error";
+import { AsyncDispose, Dispose } from "../type";
+import { finalize } from "../utility";
 import { Scheduler } from "./scheduler";
 
 export class TimerScheduler implements Scheduler {
   public constructor(span: number) {
-    this.timer = setInterval(() => this.allSettled(), span);
+    this.timer = setInterval(() => allSettled(Array.from(this.set)), span);
   }
 
-  public register(dispose: Dispose): () => unknown {
+  public register(dispose: AsyncDispose): Dispose {
+    if (this.isDisposed) {
+      throw new ResourceKeeperError("The scheduler was disposed.");
+    }
+
     this.set.add(dispose);
-    return () => this.set.delete(dispose);
+    return finalize(() => this.set.delete(dispose));
   }
 
   public async dispose() {
-    if (!this._dispose) {
-      this._dispose = true;
+    if (!this._isDisposed) {
+      this._isDisposed = true;
       clearInterval(this.timer);
 
-      await this.allSettled();
+      const disposeArray = Array.from(this.set);
+      this.set.clear();
+
+      await allSettled(disposeArray);
     }
   }
 
-  private allSettled() {
-    return Promise.allSettled(Array.from(this.set).map((dispose) => dispose()));
+  public get isDisposed() {
+    return this._isDisposed;
   }
 
-  private readonly set = new Set<Dispose>();
-  private _dispose = false;
+  private readonly set = new Set<AsyncDispose>();
   private readonly timer: ReturnType<typeof setInterval>;
+  private _isDisposed = false;
 }
 
 export const defaultTimerScheduler = new TimerScheduler(60_000);
+
+function allSettled(disposeArray: Array<AsyncDispose>) {
+  return Promise.allSettled(
+    disposeArray.map(async (dispose) => await dispose()),
+  );
+}
