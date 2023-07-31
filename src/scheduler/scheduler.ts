@@ -1,5 +1,5 @@
-import { AsyncDisposable } from "../type";
+import { AsyncDisposable, AsyncDispose, Dispose } from "../type";
 
 export interface Scheduler extends AsyncDisposable {
-  register(dispose: () => unknown): () => unknown;
+  register(dispose: AsyncDispose): Dispose;
 }
